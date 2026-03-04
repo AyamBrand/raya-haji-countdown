@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Countdown Hari Raya Haji 1447</title>
 
-  <!-- PWA -->
   <meta name="description" content="Countdown ke Hari Raya Aidiladha 1447 - 27 Mei 2026" />
   <meta name="theme-color" content="#0a0605" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -20,233 +19,172 @@
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; background: #0a0605; }
 
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      overflow-x: hidden;
-      background: #0a0605;
+    @-webkit-keyframes twinkle {
+      0%, 100% { opacity: 0; -webkit-transform: scale(0.4); }
+      50%       { opacity: 1; -webkit-transform: scale(1); }
     }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.4); }
+      50%       { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+    @keyframes rotateCW  { to { transform: translate(-50%,-50%) rotate(360deg);  } }
+    @keyframes rotateCCW { to { transform: translate(-50%,-50%) rotate(-360deg); } }
+    @keyframes pulseGlow { 0%,100% { opacity:.4; } 50% { opacity:.9; } }
+    @keyframes floatMoon { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
 
-    /* Stars: FIXED to viewport so they never scroll */
     #star-field {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100vw; height: 100vh;
       pointer-events: none;
       z-index: 0;
       overflow: hidden;
     }
 
-    .star {
-      position: absolute;
-      border-radius: 50%;
-      background: #f0c060;
-      opacity: 0;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0; transform: scale(0.4); }
-      50%       { opacity: 0.85; transform: scale(1); }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes rotateCW {
-      from { transform: translate(-50%,-50%) rotate(0deg); }
-      to   { transform: translate(-50%,-50%) rotate(360deg); }
-    }
-    @keyframes rotateCCW {
-      from { transform: translate(-50%,-50%) rotate(0deg); }
-      to   { transform: translate(-50%,-50%) rotate(-360deg); }
-    }
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.4; }
-      50%       { opacity: 0.9; }
-    }
-    @keyframes floatMoon {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-12px); }
-    }
+    /* Each star is a plain inline-styled span — no class needed */
 
     .main-container {
       position: relative;
       z-index: 1;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       padding: 48px 20px;
       background:
-        radial-gradient(ellipse 80% 50% at 50% 0%,   rgba(120,60,10,0.3) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(80,40,5,0.2)   0%, transparent 60%),
+        radial-gradient(ellipse 80% 50% at 50% 0%,   rgba(120,60,10,.3) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(80,40,5,.2)   0%, transparent 60%),
         #0a0605;
     }
 
     .ring {
-      position: absolute;
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      pointer-events: none;
+      position: absolute; border-radius: 50%;
+      top: 50%; left: 50%; pointer-events: none;
     }
     .ring-1 {
       width: min(500px,90vw); height: min(500px,90vw);
-      border: 1px solid rgba(240,180,60,0.06);
+      border: 1px solid rgba(240,180,60,.06);
       animation: rotateCW 30s linear infinite;
     }
     .ring-2 {
       width: min(350px,65vw); height: min(350px,65vw);
-      border: 1px solid rgba(240,180,60,0.04);
+      border: 1px solid rgba(240,180,60,.04);
       animation: rotateCCW 20s linear infinite;
     }
 
     .content {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 28px;
-      max-width: 680px;
-      width: 100%;
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 28px;
+      max-width: 680px; width: 100%;
       opacity: 0;
-      animation: fadeUp 1.2s ease forwards 0.4s;
+      animation: fadeUp 1.2s ease forwards .4s;
     }
 
-    .moon-container { animation: floatMoon 4s ease-in-out infinite; }
+    .moon-wrap { animation: floatMoon 4s ease-in-out infinite; }
     .moon {
       font-size: clamp(56px,14vw,96px);
-      filter: drop-shadow(0 0 30px rgba(240,180,60,0.7));
+      filter: drop-shadow(0 0 30px rgba(240,180,60,.7));
       display: block; text-align: center; line-height: 1;
     }
 
-    .ornament-row {
-      display: flex; gap: 16px; align-items: center;
-      animation: pulseGlow 3s ease-in-out infinite;
+    .orn-row { display:flex; gap:16px; align-items:center; animation: pulseGlow 3s ease-in-out infinite; }
+    .div-line { width:60px; height:1px; background: linear-gradient(to right, transparent, rgba(240,180,60,.6), transparent); }
+
+    .t-arabic {
+      font-family:'Amiri',serif;
+      font-size:clamp(26px,7vw,52px);
+      color:#f5d080; text-align:center;
+      text-shadow:0 0 40px rgba(240,180,60,.5);
+      letter-spacing:2px; line-height:1.3;
     }
-    .divider-line {
-      width: 60px; height: 1px;
-      background: linear-gradient(to right, transparent, rgba(240,180,60,0.6), transparent);
+    .t-malay {
+      font-family:'Cinzel',serif;
+      font-size:clamp(11px,3vw,19px);
+      color:rgba(240,180,60,.75);
+      letter-spacing:5px; text-transform:uppercase;
+      text-align:center; margin-top:8px;
     }
 
-    .title-arabic {
-      font-family: 'Amiri', serif;
-      font-size: clamp(26px,7vw,52px);
-      color: #f5d080;
-      text-align: center;
-      text-shadow: 0 0 40px rgba(240,180,60,0.5);
-      letter-spacing: 2px; line-height: 1.3;
+    .cd-row {
+      display:flex; gap:clamp(8px,2.5vw,24px);
+      align-items:flex-start; justify-content:center;
     }
-    .title-malay {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(11px,3vw,19px);
-      color: rgba(240,180,60,0.75);
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      text-align: center;
-      margin-top: 8px;
+    .cd-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .cd-box {
+      position:relative;
+      width:clamp(64px,17vw,124px); height:clamp(74px,19vw,144px);
+      background:linear-gradient(145deg,rgba(240,180,60,.18),rgba(180,100,20,.08));
+      border:1px solid rgba(240,180,60,.4); border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 0 30px rgba(240,160,40,.15), inset 0 1px 0 rgba(255,220,100,.2);
     }
+    .c { position:absolute; font-size:9px; color:rgba(240,180,60,.45); line-height:1; }
+    .c.tl{top:5px;left:7px} .c.tr{top:5px;right:7px}
+    .c.bl{bottom:5px;left:7px} .c.br{bottom:5px;right:7px}
 
-    .countdown-row {
-      display: flex;
-      gap: clamp(8px,2.5vw,24px);
-      align-items: flex-start;
-      justify-content: center;
+    .cd-num {
+      font-family:'Playfair Display',Georgia,serif;
+      font-size:clamp(26px,7.5vw,60px); font-weight:700;
+      color:#f5d080; text-shadow:0 0 20px rgba(240,180,60,.6);
+      line-height:1; letter-spacing:-1px;
     }
-    .box-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
-    .box {
-      position: relative;
-      width:  clamp(64px,17vw,124px);
-      height: clamp(74px,19vw,144px);
-      background: linear-gradient(145deg, rgba(240,180,60,0.18), rgba(180,100,20,0.08));
-      border: 1px solid rgba(240,180,60,0.4);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 30px rgba(240,160,40,0.15), inset 0 1px 0 rgba(255,220,100,0.2);
+    .cd-lbl {
+      font-family:'Cinzel',serif;
+      font-size:clamp(8px,1.8vw,12px);
+      letter-spacing:3px; color:rgba(240,180,60,.7); text-transform:uppercase;
     }
-    .corner { position:absolute; font-size:9px; color:rgba(240,180,60,0.45); line-height:1; }
-    .tl { top:5px;    left:7px;   }
-    .tr { top:5px;    right:7px;  }
-    .bl { bottom:5px; left:7px;   }
-    .br { bottom:5px; right:7px;  }
-
-    .num {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(26px,7.5vw,60px);
-      font-weight: 700;
-      color: #f5d080;
-      text-shadow: 0 0 20px rgba(240,180,60,0.6);
-      line-height: 1; letter-spacing: -1px;
-    }
-    .lbl {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(8px,1.8vw,12px);
-      letter-spacing: 3px;
-      color: rgba(240,180,60,0.7);
-      text-transform: uppercase;
-    }
-    .sep {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(24px,6vw,52px);
-      color: rgba(240,180,60,0.4);
-      align-self: center;
-      margin-bottom: 28px;
+    .cd-sep {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(24px,6vw,52px);
+      color:rgba(240,180,60,.4);
+      align-self:center; margin-bottom:28px;
     }
 
     .date-badge {
-      background: linear-gradient(135deg,rgba(240,180,60,0.12),rgba(180,100,20,0.06));
-      border: 1px solid rgba(240,180,60,0.25);
-      border-radius: 40px;
-      padding: 10px 24px;
-      font-family: 'Cinzel', serif;
-      font-size: clamp(10px,2.2vw,14px);
-      color: rgba(240,180,60,0.8);
-      letter-spacing: 2px; text-align: center;
+      background:linear-gradient(135deg,rgba(240,180,60,.12),rgba(180,100,20,.06));
+      border:1px solid rgba(240,180,60,.25); border-radius:40px;
+      padding:10px 24px; font-family:'Cinzel',serif;
+      font-size:clamp(10px,2.2vw,14px);
+      color:rgba(240,180,60,.8); letter-spacing:2px; text-align:center;
     }
 
-    .doa-text {
-      font-family: 'Amiri', serif;
-      font-size: clamp(13px,3vw,18px);
-      color: rgba(240,180,60,0.5);
-      text-align: center; font-style: italic;
-      letter-spacing: 1px; max-width: 380px; line-height: 1.9;
+    .doa {
+      font-family:'Amiri',serif;
+      font-size:clamp(13px,3vw,18px);
+      color:rgba(240,180,60,.5); text-align:center;
+      font-style:italic; letter-spacing:1px;
+      max-width:380px; line-height:1.9;
     }
 
     .credit {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(9px,1.8vw,11px);
-      color: rgba(240,180,60,0.35);
-      text-align: center; letter-spacing: 1px; line-height: 1.8;
+      font-family:'Cinzel',serif;
+      font-size:clamp(9px,1.8vw,11px);
+      color:rgba(240,180,60,.35);
+      text-align:center; letter-spacing:1px; line-height:1.8;
     }
     .credit a {
-      color: rgba(240,180,60,0.55);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(240,180,60,0.25);
-      padding-bottom: 1px;
-      transition: color .3s, border-color .3s;
+      color:rgba(240,180,60,.55); text-decoration:none;
+      border-bottom:1px solid rgba(240,180,60,.25); padding-bottom:1px;
+      transition:color .3s,border-color .3s;
     }
-    .credit a:hover { color:rgba(240,180,60,0.9); border-color:rgba(240,180,60,0.7); }
+    .credit a:hover { color:rgba(240,180,60,.9); border-color:rgba(240,180,60,.7); }
 
     #install-banner {
-      display: none;
-      position: fixed;
-      bottom: 24px; left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg,rgba(240,180,60,0.22),rgba(180,100,20,0.16));
-      border: 1px solid rgba(240,180,60,0.45);
-      border-radius: 40px;
-      padding: 13px 28px;
-      font-family: 'Cinzel', serif;
-      font-size: 12px; letter-spacing: 2px;
-      color: rgba(240,180,60,0.95);
-      cursor: pointer; z-index: 999;
-      white-space: nowrap;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      display:none; position:fixed;
+      bottom:24px; left:50%; transform:translateX(-50%);
+      background:linear-gradient(135deg,rgba(240,180,60,.22),rgba(180,100,20,.16));
+      border:1px solid rgba(240,180,60,.45); border-radius:40px;
+      padding:13px 28px; font-family:'Cinzel',serif;
+      font-size:12px; letter-spacing:2px; color:rgba(240,180,60,.95);
+      cursor:pointer; z-index:999; white-space:nowrap;
+      box-shadow:0 4px 24px rgba(0,0,0,.5);
+      backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
     }
   </style>
 </head>
@@ -260,67 +198,67 @@
 
     <div class="content">
 
-      <div class="moon-container"><span class="moon">☪️</span></div>
+      <div class="moon-wrap"><span class="moon">☪️</span></div>
 
-      <div class="ornament-row">
-        <div class="divider-line"></div>
-        <span style="color:rgba(240,180,60,0.7);font-size:18px">✦ ❋ ✦</span>
-        <div class="divider-line"></div>
+      <div class="orn-row">
+        <div class="div-line"></div>
+        <span style="color:rgba(240,180,60,.7);font-size:18px">✦ ❋ ✦</span>
+        <div class="div-line"></div>
       </div>
 
       <div style="text-align:center">
-        <div class="title-arabic">عيد الأضحى ١٤٤٧</div>
-        <div class="title-malay">Hari Raya Aidiladha</div>
+        <div class="t-arabic">عيد الأضحى ١٤٤٧</div>
+        <div class="t-malay">Hari Raya Aidiladha</div>
       </div>
 
-      <div class="countdown-row">
-        <div class="box-wrap">
-          <div class="box">
-            <span class="corner tl">✦</span><span class="corner tr">✦</span>
-            <span class="corner bl">✦</span><span class="corner br">✦</span>
-            <span class="num" id="days">--</span>
+      <div class="cd-row">
+        <div class="cd-wrap">
+          <div class="cd-box">
+            <span class="c tl">✦</span><span class="c tr">✦</span>
+            <span class="c bl">✦</span><span class="c br">✦</span>
+            <span class="cd-num" id="days">--</span>
           </div>
-          <span class="lbl">Hari</span>
+          <span class="cd-lbl">Hari</span>
         </div>
-        <span class="sep">:</span>
-        <div class="box-wrap">
-          <div class="box">
-            <span class="corner tl">✦</span><span class="corner tr">✦</span>
-            <span class="corner bl">✦</span><span class="corner br">✦</span>
-            <span class="num" id="hours">--</span>
+        <span class="cd-sep">:</span>
+        <div class="cd-wrap">
+          <div class="cd-box">
+            <span class="c tl">✦</span><span class="c tr">✦</span>
+            <span class="c bl">✦</span><span class="c br">✦</span>
+            <span class="cd-num" id="hours">--</span>
           </div>
-          <span class="lbl">Jam</span>
+          <span class="cd-lbl">Jam</span>
         </div>
-        <span class="sep">:</span>
-        <div class="box-wrap">
-          <div class="box">
-            <span class="corner tl">✦</span><span class="corner tr">✦</span>
-            <span class="corner bl">✦</span><span class="corner br">✦</span>
-            <span class="num" id="minutes">--</span>
+        <span class="cd-sep">:</span>
+        <div class="cd-wrap">
+          <div class="cd-box">
+            <span class="c tl">✦</span><span class="c tr">✦</span>
+            <span class="c bl">✦</span><span class="c br">✦</span>
+            <span class="cd-num" id="minutes">--</span>
           </div>
-          <span class="lbl">Minit</span>
+          <span class="cd-lbl">Minit</span>
         </div>
-        <span class="sep">:</span>
-        <div class="box-wrap">
-          <div class="box">
-            <span class="corner tl">✦</span><span class="corner tr">✦</span>
-            <span class="corner bl">✦</span><span class="corner br">✦</span>
-            <span class="num" id="seconds">--</span>
+        <span class="cd-sep">:</span>
+        <div class="cd-wrap">
+          <div class="cd-box">
+            <span class="c tl">✦</span><span class="c tr">✦</span>
+            <span class="c bl">✦</span><span class="c br">✦</span>
+            <span class="cd-num" id="seconds">--</span>
           </div>
-          <span class="lbl">Saat</span>
+          <span class="cd-lbl">Saat</span>
         </div>
       </div>
 
       <div class="date-badge">✦ &nbsp; 27 Mei 2026 &nbsp; • &nbsp; 10 Zulhijjah 1447 &nbsp; ✦</div>
 
-      <div class="ornament-row">
-        <div class="divider-line"></div>
-        <span style="color:rgba(240,180,60,0.5);font-size:14px">❀ ❋ ❀</span>
-        <div class="divider-line"></div>
+      <div class="orn-row">
+        <div class="div-line"></div>
+        <span style="color:rgba(240,180,60,.5);font-size:14px">❀ ❋ ❀</span>
+        <div class="div-line"></div>
       </div>
 
-      <div class="doa-text">
-        Semoga ibadah korban kita diterima Allah,<br />
+      <div class="doa">
+        Semoga ibadah korban kita diterima Allah,<br>
         dan dipertemukan kita dengan hari yang mulia ini.
       </div>
 
@@ -334,43 +272,45 @@
   <div id="install-banner">📲 &nbsp; Install Sebagai Apps</div>
 
   <script>
-    // Stars
-    (function() {
-      var field = document.getElementById('star-field');
-      var frag  = document.createDocumentFragment();
-      for (var i = 0; i < 50; i++) {
-        var s    = document.createElement('div');
-        s.className = 'star';
-        var sz   = (Math.random() * 2.5 + 0.8).toFixed(1);
-        var dur  = (Math.random() * 3 + 2).toFixed(2);
-        var del  = (Math.random() * 5).toFixed(2);
-        s.style.cssText =
-          'left:'    + (Math.random()*100).toFixed(2) + '%;' +
-          'top:'     + (Math.random()*100).toFixed(2) + '%;' +
-          'width:'   + sz + 'px;height:' + sz + 'px;' +
-          'animation:twinkle ' + dur + 's ease-in-out ' + del + 's infinite';
-        frag.appendChild(s);
-      }
-      field.appendChild(frag);
-    })();
+    // ── Stars: set each property individually (NOT cssText) ──
+    var field = document.getElementById('star-field');
+    for (var i = 0; i < 55; i++) {
+      var s = document.createElement('span');
+      var sz  = (Math.random() * 2.5 + 1).toFixed(1);
+      var dur = (Math.random() * 3  + 2).toFixed(2);
+      var del = (Math.random() * 6).toFixed(2);
+      s.style.position        = 'absolute';
+      s.style.borderRadius    = '50%';
+      s.style.background      = '#f0c060';
+      s.style.opacity         = '0';
+      s.style.width           = sz + 'px';
+      s.style.height          = sz + 'px';
+      s.style.left            = (Math.random() * 98 + 1).toFixed(2) + '%';
+      s.style.top             = (Math.random() * 98 + 1).toFixed(2) + '%';
+      var anim = 'twinkle ' + dur + 's ease-in-out ' + del + 's infinite';
+      s.style.webkitAnimation = anim;
+      s.style.animation       = anim;
+      field.appendChild(s);
+    }
 
-    // Countdown
+    // ── Countdown ──
     var TARGET = new Date('2026-05-27T00:00:00');
-    function pad(n) { return ('0' + n).slice(-2); }
+    function pad(n) { return ('0' + Math.floor(n)).slice(-2); }
     function tick() {
       var diff = TARGET - Date.now();
       if (diff < 0) diff = 0;
-      document.getElementById('days').textContent    = pad(Math.floor(diff / 86400000));
-      document.getElementById('hours').textContent   = pad(Math.floor((diff % 86400000) / 3600000));
-      document.getElementById('minutes').textContent = pad(Math.floor((diff % 3600000)  / 60000));
-      document.getElementById('seconds').textContent = pad(Math.floor((diff % 60000)    / 1000));
+      document.getElementById('days').textContent    = pad(diff / 86400000);
+      document.getElementById('hours').textContent   = pad((diff % 86400000) / 3600000);
+      document.getElementById('minutes').textContent = pad((diff % 3600000)  / 60000);
+      document.getElementById('seconds').textContent = pad((diff % 60000)    / 1000);
     }
     tick();
     setInterval(tick, 1000);
 
-    // PWA install
+    // ── PWA Install ──
     var deferredPrompt = null;
     var banner = document.getElementById('install-banner');
+
     window.addEventListener('beforeinstallprompt', function(e) {
       e.preventDefault();
       deferredPrompt = e;
@@ -388,10 +328,12 @@
       banner.style.display = 'none';
     });
 
-    // Service Worker
+    // ── Service Worker ──
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('sw.js').catch(function(e){
+          console.warn('SW failed:', e);
+        });
       });
     }
   </script>

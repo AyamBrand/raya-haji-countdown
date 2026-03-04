@@ -1,0 +1,22 @@
+{
+  "name": "Countdown Hari Raya Haji 1447",
+  "short_name": "Raya Haji 1447",
+  "description": "Countdown ke Hari Raya Aidiladha 1447 - 27 Mei 2026",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0605",
+  "theme_color": "#0a0605",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

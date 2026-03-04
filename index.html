@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown Hari Raya Haji 1447</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="description" content="Countdown ke Hari Raya Aidiladha 1447 - 27 Mei 2026" />
+  <meta name="theme-color" content="#0a0605" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Raya Haji 1447" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Countdown Hari Raya Haji 1447" />
+  <meta property="og:description" content="27 Mei 2026 • 10 Zulhijjah 1447" />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0605;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: sans-serif;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 0.9; transform: scale(1); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes floatMoon {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    #star-field {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #f0c060;
+      opacity: 0;
+    }
+
+    .main-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(120,60,10,0.3) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(80,40,5,0.2) 0%, transparent 60%),
+        #0a0605;
+    }
+
+    .ring-decoration {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border: 1px solid rgba(240,180,60,0.06);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: rotateSlow 30s linear infinite;
+      pointer-events: none;
+    }
+
+    .ring-decoration-2 {
+      width: 350px;
+      height: 350px;
+      border-color: rgba(240,180,60,0.04);
+      animation-duration: 20s;
+      animation-direction: reverse;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      opacity: 0;
+      animation: fadeUp 1.2s ease forwards 0.3s;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .moon-container {
+      animation: floatMoon 4s ease-in-out infinite;
+    }
+
+    .moon {
+      font-size: clamp(56px, 14vw, 96px);
+      filter: drop-shadow(0 0 30px rgba(240,180,60,0.7));
+      line-height: 1;
+      display: block;
+      text-align: center;
+    }
+
+    .ornament-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    .divider-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(240,180,60,0.6), transparent);
+    }
+
+    .title-arabic {
+      font-family: 'Amiri', serif;
+      font-size: clamp(28px, 7vw, 52px);
+      color: #f5d080;
+      text-align: center;
+      text-shadow: 0 0 40px rgba(240,180,60,0.5);
+      letter-spacing: 2px;
+      line-height: 1.3;
+    }
+
+    .title-malay {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(13px, 3.5vw, 20px);
+      color: rgba(240,180,60,0.75);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .countdown-row {
+      display: flex;
+      gap: clamp(10px, 3vw, 28px);
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .countdown-box-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .countdown-box {
+      position: relative;
+      width: clamp(70px, 18vw, 130px);
+      height: clamp(80px, 20vw, 150px);
+      background: linear-gradient(145deg, rgba(240,180,60,0.18) 0%, rgba(180,100,20,0.08) 100%);
+      border: 1px solid rgba(240,180,60,0.4);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(240,160,40,0.15), inset 0 1px 0 rgba(255,220,100,0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .corner {
+      position: absolute;
+      font-size: 10px;
+      color: rgba(240,180,60,0.5);
+      line-height: 1;
+    }
+    .corner.tl { top: 6px; left: 8px; }
+    .corner.tr { top: 6px; right: 8px; }
+    .corner.bl { bottom: 6px; left: 8px; }
+    .corner.br { bottom: 6px; right: 8px; }
+
+    .countdown-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(28px, 8vw, 64px);
+      font-weight: 700;
+      color: #f5d080;
+      letter-spacing: -1px;
+      text-shadow: 0 0 20px rgba(240,180,60,0.6);
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(9px, 2vw, 13px);
+      letter-spacing: 3px;
+      color: rgba(240,180,60,0.7);
+      text-transform: uppercase;
+    }
+
+    .separator {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 7vw, 56px);
+      color: rgba(240,180,60,0.4);
+      line-height: 1;
+      align-self: center;
+      margin-bottom: 30px;
+    }
+
+    .date-badge {
+      background: linear-gradient(135deg, rgba(240,180,60,0.12), rgba(180,100,20,0.06));
+      border: 1px solid rgba(240,180,60,0.25);
+      border-radius: 40px;
+      padding: 10px 28px;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(11px, 2.5vw, 15px);
+      color: rgba(240,180,60,0.8);
+      letter-spacing: 3px;
+      text-align: center;
+    }
+
+    .doa-text {
+      font-family: 'Amiri', serif;
+      font-size: clamp(13px, 3vw, 18px);
+      color: rgba(240,180,60,0.5);
+      text-align: center;
+      font-style: italic;
+      letter-spacing: 1px;
+      max-width: 400px;
+      line-height: 1.8;
+    }
+
+    .credit {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(9px, 2vw, 11px);
+      color: rgba(240,180,60,0.35);
+      text-align: center;
+      letter-spacing: 1px;
+      line-height: 1.8;
+      margin-top: 8px;
+    }
+
+    .credit a {
+      color: rgba(240,180,60,0.55);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(240,180,60,0.25);
+      padding-bottom: 1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .credit a:hover {
+      color: rgba(240,180,60,0.9);
+      border-color: rgba(240,180,60,0.7);
+    }
+
+    /* PWA install banner */
+    #install-banner {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, rgba(240,180,60,0.2), rgba(180,100,20,0.15));
+      border: 1px solid rgba(240,180,60,0.4);
+      border-radius: 40px;
+      padding: 12px 24px;
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      color: rgba(240,180,60,0.9);
+      letter-spacing: 2px;
+      cursor: pointer;
+      z-index: 999;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+    }
+
+    #install-banner:hover {
+      background: linear-gradient(135deg, rgba(240,180,60,0.3), rgba(180,100,20,0.2));
+    }
+  </style>
+</head>
+<body>
+
+  <div id="star-field"></div>
+
+  <div class="main-container">
+    <div class="ring-decoration"></div>
+    <div class="ring-decoration ring-decoration-2"></div>
+
+    <div class="content">
+
+      <!-- Moon -->
+      <div class="moon-container">
+        <span class="moon">☪️</span>
+      </div>
+
+      <!-- Ornament -->
+      <div class="ornament-row">
+        <div class="divider-line"></div>
+        <span style="color:rgba(240,180,60,0.7);font-size:18px">✦ ❋ ✦</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- Title -->
+      <div style="text-align:center">
+        <div class="title-arabic">عيد الأضحى ١٤٤٧</div>
+        <div class="title-malay">Hari Raya Aidiladha</div>
+      </div>
+
+      <!-- Countdown -->
+      <div class="countdown-row">
+        <div class="countdown-box-wrap">
+          <div class="countdown-box">
+            <span class="corner tl">✦</span>
+            <span class="corner tr">✦</span>
+            <span class="corner bl">✦</span>
+            <span class="corner br">✦</span>
+            <span class="countdown-num" id="days">00</span>
+          </div>
+          <span class="countdown-label">Hari</span>
+        </div>
+
+        <span class="separator">:</span>
+
+        <div class="countdown-box-wrap">
+          <div class="countdown-box">
+            <span class="corner tl">✦</span>
+            <span class="corner tr">✦</span>
+            <span class="corner bl">✦</span>
+            <span class="corner br">✦</span>
+            <span class="countdown-num" id="hours">00</span>
+          </div>
+          <span class="countdown-label">Jam</span>
+        </div>
+
+        <span class="separator">:</span>
+
+        <div class="countdown-box-wrap">
+          <div class="countdown-box">
+            <span class="corner tl">✦</span>
+            <span class="corner tr">✦</span>
+            <span class="corner bl">✦</span>
+            <span class="corner br">✦</span>
+            <span class="countdown-num" id="minutes">00</span>
+          </div>
+          <span class="countdown-label">Minit</span>
+        </div>
+
+        <span class="separator">:</span>
+
+        <div class="countdown-box-wrap">
+          <div class="countdown-box">
+            <span class="corner tl">✦</span>
+            <span class="corner tr">✦</span>
+            <span class="corner bl">✦</span>
+            <span class="corner br">✦</span>
+            <span class="countdown-num" id="seconds">00</span>
+          </div>
+          <span class="countdown-label">Saat</span>
+        </div>
+      </div>
+
+      <!-- Date badge -->
+      <div class="date-badge">✦ &nbsp; 27 Mei 2026 &nbsp; • &nbsp; 10 Zulhijjah 1447 &nbsp; ✦</div>
+
+      <!-- Ornament -->
+      <div class="ornament-row">
+        <div class="divider-line"></div>
+        <span style="color:rgba(240,180,60,0.5);font-size:14px">❀ ❋ ❀</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- Doa -->
+      <div class="doa-text">
+        Semoga ibadah korban kita diterima Allah,<br />
+        dan dipertemukan kita dengan hari yang mulia ini.
+      </div>
+
+      <!-- Credit -->
+      <div class="credit">
+        ©2026 <a href="https://mylink.la/annamir" target="_blank" rel="noopener noreferrer">Muktasyaf AnNamir</a> | Dibangunkan dari 🩷 untuk anda 🫰
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div id="install-banner">📲 &nbsp; Install Sebagai Apps</div>
+
+  <script>
+    // ── Stars ──
+    const field = document.getElementById('star-field');
+    for (let i = 0; i < 40; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 3 + 1;
+      s.style.cssText = `
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        width:${size}px; height:${size}px;
+        animation: twinkle ${Math.random()*3+2}s ease-in-out ${Math.random()*4}s infinite;
+      `;
+      field.appendChild(s);
+    }
+
+    // ── Countdown ──
+    const TARGET = new Date("2026-05-27T00:00:00");
+    function pad(n) { return String(n).padStart(2,'0'); }
+
+    function tick() {
+      const diff = TARGET - new Date();
+      if (diff <= 0) {
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+      }
+      document.getElementById('days').textContent    = pad(Math.floor(diff / 86400000));
+      document.getElementById('hours').textContent   = pad(Math.floor((diff % 86400000) / 3600000));
+      document.getElementById('minutes').textContent = pad(Math.floor((diff % 3600000) / 60000));
+      document.getElementById('seconds').textContent = pad(Math.floor((diff % 60000) / 1000));
+    }
+
+    tick();
+    setInterval(tick, 1000);
+
+    // ── PWA Install ──
+    let deferredPrompt;
+    const banner = document.getElementById('install-banner');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      banner.style.display = 'block';
+    });
+
+    banner.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      banner.style.display = 'none';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      banner.style.display = 'none';
+    });
+
+    // ── Service Worker ──
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

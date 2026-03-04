@@ -21,22 +21,11 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; min-height: 100%; overflow-x: hidden; background: #0a0605; }
 
-    @-webkit-keyframes twinkle {
-      0%, 100% { opacity: 0; -webkit-transform: scale(0.4); }
-      50%       { opacity: 1; -webkit-transform: scale(1); }
-    }
+    /* Keyframes Bintang */
     @keyframes twinkle {
-      0%, 100% { opacity: 0; transform: scale(0.4); }
-      50%       { opacity: 1; transform: scale(1); }
+      0%, 100% { opacity: 0.2; transform: scale(0.5); }
+      50%       { opacity: 1; transform: scale(1.2); }
     }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0);    }
-    }
-    @keyframes rotateCW  { to { transform: translate(-50%,-50%) rotate(360deg);  } }
-    @keyframes rotateCCW { to { transform: translate(-50%,-50%) rotate(-360deg); } }
-    @keyframes pulseGlow { 0%,100% { opacity:.4; } 50% { opacity:.9; } }
-    @keyframes floatMoon { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
 
     #star-field {
       position: fixed;
@@ -47,7 +36,24 @@
       overflow: hidden;
     }
 
-    /* Each star is a plain inline-styled span — no class needed */
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #f0c060;
+      box-shadow: 0 0 4px rgba(240, 192, 96, 0.8);
+      animation: twinkle linear infinite;
+      /* Memastikan bintang kelihatan walaupun sebelum animasi bermula */
+      opacity: 0.2;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+    @keyframes rotateCW  { to { transform: translate(-50%,-50%) rotate(360deg);  } }
+    @keyframes rotateCCW { to { transform: translate(-50%,-50%) rotate(-360deg); } }
+    @keyframes pulseGlow { 0%,100% { opacity:.4; } 50% { opacity:.9; } }
+    @keyframes floatMoon { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
 
     .main-container {
       position: relative;
@@ -59,7 +65,7 @@
       background:
         radial-gradient(ellipse 80% 50% at 50% 0%,   rgba(120,60,10,.3) 0%, transparent 60%),
         radial-gradient(ellipse 60% 40% at 50% 100%, rgba(80,40,5,.2)   0%, transparent 60%),
-        #0a0605;
+        transparent; /* Biar bintang di belakang nampak */
     }
 
     .ring {
@@ -272,26 +278,26 @@
   <div id="install-banner">📲 &nbsp; Install Sebagai Apps</div>
 
   <script>
-    // ── Stars: set each property individually (NOT cssText) ──
+    // ── Stars: Menggunakan class 'star' untuk gaya yang konsisten ──
     var field = document.getElementById('star-field');
-    for (var i = 0; i < 55; i++) {
-      var s = document.createElement('span');
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < 120; i++) {
+      var s = document.createElement('div');
+      s.className = 'star';
       var sz  = (Math.random() * 2.5 + 1).toFixed(1);
       var dur = (Math.random() * 3  + 2).toFixed(2);
-      var del = (Math.random() * 6).toFixed(2);
-      s.style.position        = 'absolute';
-      s.style.borderRadius    = '50%';
-      s.style.background      = '#f0c060';
-      s.style.opacity         = '0';
+      var del = (Math.random() * 5).toFixed(2);
+      
       s.style.width           = sz + 'px';
       s.style.height          = sz + 'px';
-      s.style.left            = (Math.random() * 98 + 1).toFixed(2) + '%';
-      s.style.top             = (Math.random() * 98 + 1).toFixed(2) + '%';
-      var anim = 'twinkle ' + dur + 's ease-in-out ' + del + 's infinite';
-      s.style.webkitAnimation = anim;
-      s.style.animation       = anim;
-      field.appendChild(s);
+      s.style.left            = (Math.random() * 100).toFixed(2) + '%';
+      s.style.top             = (Math.random() * 100).toFixed(2) + '%';
+      s.style.animationDuration = dur + 's';
+      s.style.animationDelay    = del + 's';
+      
+      frag.appendChild(s);
     }
+    field.appendChild(frag);
 
     // ── Countdown ──
     var TARGET = new Date('2026-05-27T00:00:00');
